@@ -1,7 +1,7 @@
 package http
 
 import (
-	"distributeCache/cache"
+	"distributeCache/httpimpl/cache"
 )
 
 func New(c cache.Cache) *Server {
