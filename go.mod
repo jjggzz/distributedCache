@@ -1,3 +1,3 @@
-module Fool
+module distributeCache
 
 go 1.14

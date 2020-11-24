@@ -1,34 +1,10 @@
 package cache
 
-import (
-	"log"
-	"sync"
-)
-
-func New(typ string) Cache {
-	var c Cache
-	if typ == "inMemory" {
-		c = newInMemoryCache()
-	}
-	if c == nil {
-		panic("未知的缓存类型" + typ)
-	}
-	log.Print(typ, "读取服务")
-
-	return c
-}
+import "sync"
 
 // 创建Cache接口的一个实现结构体实例(inMemoryCache)
 func newInMemoryCache() *inMemoryCache {
 	return &inMemoryCache{make(map[string][]byte), sync.RWMutex{}, Stat{}}
-}
-
-// 缓存接口
-type Cache interface {
-	Set(string, []byte) error
-	Get(string) ([]byte, error)
-	Del(string) error
-	GetStat() Stat
 }
 
 // 缓存接口实现结构体
@@ -73,23 +49,4 @@ func (i *inMemoryCache) Del(key string) error {
 // inMemoryCache实现获取状态方法
 func (i *inMemoryCache) GetStat() Stat {
 	return i.Stat
-}
-
-// 状态结构体
-type Stat struct {
-	Count     int64
-	KeySize   int64
-	ValueSize int64
-}
-
-func (s *Stat) add(key string, value []byte) {
-	s.Count++
-	s.KeySize += int64(len(key))
-	s.ValueSize += int64(len(value))
-}
-
-func (s *Stat) del(key string, value []byte) {
-	s.Count--
-	s.KeySize -= int64(len(key))
-	s.ValueSize -= int64(len(value))
 }

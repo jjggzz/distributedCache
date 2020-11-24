@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Fool/main/cache"
-	"Fool/main/http"
+	"distributeCache/cache"
+	"distributeCache/http"
 )
 
 func main() {
