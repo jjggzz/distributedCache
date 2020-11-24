@@ -3,8 +3,11 @@ package http
 import (
 	"Fool/main/cache"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func New(c cache.Cache) *Server {
@@ -18,6 +21,11 @@ type Server struct {
 func (s *Server) Listen() {
 	http.Handle("/cache/", s.cacheHandler())
 	http.Handle("/status", s.statusHandler())
+	log.Print("开始监听服务...")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 type cacheHandler struct {
@@ -25,7 +33,50 @@ type cacheHandler struct {
 }
 
 func (h *cacheHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// TODO 缓存操作方法未实现
+	// 获取key
+	key := strings.Split(r.RequestURI, "/")[2]
+	if len(key) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	m := r.Method
+	// get
+	if m == http.MethodGet {
+		bytes, err := h.Get(key)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if len(bytes) == 0 {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		_, _ = w.Write(bytes)
+		return
+	}
+
+	// set
+	if m == http.MethodPut {
+		bytes, _ := ioutil.ReadAll(r.Body)
+		if len(bytes) != 0 {
+			err := h.Set(key, bytes)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+		return
+	}
+
+	// del
+	if m == http.MethodDelete {
+		err := h.Del(key)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusMethodNotAllowed)
+
 }
 
 func (s *Server) cacheHandler() http.Handler {
