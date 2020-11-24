@@ -23,7 +23,3 @@ func (h *statusHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	_, _ = w.Write(bytes)
 }
-
-func (s *Server) statusHandler() http.Handler {
-	return &statusHandler{s}
-}

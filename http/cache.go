@@ -56,7 +56,3 @@ func (h *cacheHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 
 }
-
-func (s *Server) cacheHandler() http.Handler {
-	return &cacheHandler{s}
-}

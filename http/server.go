@@ -20,3 +20,11 @@ func (s *Server) Listen() {
 		fmt.Println(err)
 	}
 }
+
+func (s *Server) cacheHandler() http.Handler {
+	return &cacheHandler{s}
+}
+
+func (s *Server) statusHandler() http.Handler {
+	return &statusHandler{s}
+}
