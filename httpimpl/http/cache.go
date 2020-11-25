@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// 缓存http处理实现
 type cacheHandler struct {
 	*Server
 }

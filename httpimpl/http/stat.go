@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// 状态http处理实现
 type statusHandler struct {
 	*Server
 }

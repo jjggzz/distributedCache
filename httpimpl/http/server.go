@@ -7,10 +7,12 @@ import (
 	"net/http"
 )
 
+// 缓存服务类
 type Server struct {
 	cache.Cache
 }
 
+// 监听http请求
 func (s *Server) Listen() {
 	http.Handle("/cache/", s.cacheHandler())
 	http.Handle("/status", s.statusHandler())
