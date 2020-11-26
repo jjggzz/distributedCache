@@ -21,6 +21,7 @@ func (s *Server) Listen() {
 		if err != nil {
 			panic(err)
 		}
-		// TODO 开一个协程去处理
+		// 开一个协程去处理
+		go s.logic(conn)
 	}
 }
